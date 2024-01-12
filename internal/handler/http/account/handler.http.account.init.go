@@ -6,8 +6,11 @@ import (
 )
 
 type Handler struct {
+	accountUsecase domain.IAccountUsecase
 }
 
 func New(accountUsecase domain.IAccountUsecase) v1.AccountServiceHTTPServer {
-	return &Handler{}
+	return &Handler{
+		accountUsecase: accountUsecase,
+	}
 }

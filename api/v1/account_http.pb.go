@@ -19,15 +19,21 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationAccountServiceLogin = "/v1.AccountService/Login"
 const OperationAccountServiceSignup = "/v1.AccountService/Signup"
+const OperationAccountServiceVerify = "/v1.AccountService/Verify"
 
 type AccountServiceHTTPServer interface {
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Signup(context.Context, *SignupRequest) (*SignupResponse, error)
+	Verify(context.Context, *VerifyRequest) (*VerifyResponse, error)
 }
 
 func RegisterAccountServiceHTTPServer(s *http.Server, srv AccountServiceHTTPServer) {
 	r := s.Route("/")
 	r.POST("/accounts:signup", _AccountService_Signup0_HTTP_Handler(srv))
+	r.GET("/accounts:signup", _AccountService_Verify0_HTTP_Handler(srv))
+	r.POST("/accounts:login", _AccountService_Login0_HTTP_Handler(srv))
 }
 
 func _AccountService_Signup0_HTTP_Handler(srv AccountServiceHTTPServer) func(ctx http.Context) error {
@@ -52,8 +58,51 @@ func _AccountService_Signup0_HTTP_Handler(srv AccountServiceHTTPServer) func(ctx
 	}
 }
 
+func _AccountService_Verify0_HTTP_Handler(srv AccountServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in VerifyRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAccountServiceVerify)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Verify(ctx, req.(*VerifyRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*VerifyResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _AccountService_Login0_HTTP_Handler(srv AccountServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in LoginRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAccountServiceLogin)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Login(ctx, req.(*LoginRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*LoginResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AccountServiceHTTPClient interface {
+	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginResponse, err error)
 	Signup(ctx context.Context, req *SignupRequest, opts ...http.CallOption) (rsp *SignupResponse, err error)
+	Verify(ctx context.Context, req *VerifyRequest, opts ...http.CallOption) (rsp *VerifyResponse, err error)
 }
 
 type AccountServiceHTTPClientImpl struct {
@@ -64,6 +113,19 @@ func NewAccountServiceHTTPClient(client *http.Client) AccountServiceHTTPClient {
 	return &AccountServiceHTTPClientImpl{client}
 }
 
+func (c *AccountServiceHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginResponse, error) {
+	var out LoginResponse
+	pattern := "/accounts:login"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAccountServiceLogin))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *AccountServiceHTTPClientImpl) Signup(ctx context.Context, in *SignupRequest, opts ...http.CallOption) (*SignupResponse, error) {
 	var out SignupResponse
 	pattern := "/accounts:signup"
@@ -71,6 +133,19 @@ func (c *AccountServiceHTTPClientImpl) Signup(ctx context.Context, in *SignupReq
 	opts = append(opts, http.Operation(OperationAccountServiceSignup))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *AccountServiceHTTPClientImpl) Verify(ctx context.Context, in *VerifyRequest, opts ...http.CallOption) (*VerifyResponse, error) {
+	var out VerifyResponse
+	pattern := "/accounts:signup"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAccountServiceVerify))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

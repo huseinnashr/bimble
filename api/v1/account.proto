@@ -15,6 +15,19 @@ service AccountService {
       body: "*",
     };
   }
+
+  rpc Verify(VerifyRequest) returns (VerifyResponse) {
+    option (google.api.http) = {
+      get: "/accounts:signup",
+    };
+  }
+
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/accounts:login",
+      body: "*",
+    };
+  }
 }
 
 message SignupRequest {
@@ -24,4 +37,21 @@ message SignupRequest {
 
 message SignupResponse {
   string message = 1; 
+}
+
+message VerifyRequest {
+  string token = 1;
+}
+
+message VerifyResponse {
+  string message = 1;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
 }
