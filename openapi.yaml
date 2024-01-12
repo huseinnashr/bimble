@@ -6,7 +6,41 @@ info:
     title: AccountService API
     version: 0.0.1
 paths:
+    /accounts:login:
+        post:
+            tags:
+                - AccountService
+            operationId: AccountService_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.LoginResponse'
     /accounts:signup:
+        get:
+            tags:
+                - AccountService
+            operationId: AccountService_Verify
+            parameters:
+                - name: token
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.VerifyResponse'
         post:
             tags:
                 - AccountService
@@ -26,6 +60,18 @@ paths:
                                 $ref: '#/components/schemas/v1.SignupResponse'
 components:
     schemas:
+        v1.LoginRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        v1.LoginResponse:
+            type: object
+            properties:
+                token:
+                    type: string
         v1.SignupRequest:
             type: object
             properties:
@@ -34,6 +80,11 @@ components:
                 password:
                     type: string
         v1.SignupResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+        v1.VerifyResponse:
             type: object
             properties:
                 message:

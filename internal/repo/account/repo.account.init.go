@@ -1,8 +1,12 @@
 package account
 
+import (
+	"github.com/huseinnashr/bimble/internal/domain"
+)
+
 type Repo struct {
 }
 
-func New() *Repo {
+func New() domain.IAccountRepo {
 	return &Repo{}
 }
