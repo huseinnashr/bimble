@@ -1,0 +1,42 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: AccountService API
+    version: 0.0.1
+paths:
+    /accounts:signup:
+        post:
+            tags:
+                - AccountService
+            operationId: AccountService_Signup
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.SignupRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.SignupResponse'
+components:
+    schemas:
+        v1.SignupRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        v1.SignupResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+tags:
+    - name: AccountService
