@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "gitlab.com/huseinnashr/bimble/api/v1;v1";
+
+service AccountService {
+  rpc Signup(SignupRequest) returns (SignupResponse) {
+    option (google.api.http) = {
+      post: "/accounts:signup",
+      body: "*",
+    };
+  }
+}
+
+message SignupRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignupResponse {
+  string message = 1; 
+}

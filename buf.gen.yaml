@@ -1,0 +1,16 @@
+version: v1
+plugins:
+  - plugin: go
+    out: api
+    opt: paths=source_relative
+  - plugin: go-http
+    out: api
+    opt: paths=source_relative
+  - plugin: openapi
+    out: .
+    opt: fq_schema_naming=true,default_response=false
+    strategy: all
+  - plugin: buf.build/bufbuild/validate-go
+    out: api
+    opt:
+      - paths=source_relative
