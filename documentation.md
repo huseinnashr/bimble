@@ -146,19 +146,20 @@ ACCOUNTS {
     string password
     boolean is_verified
     point location
-    bigint dating_profile_id FK
 }
 
 PROFILES {
     bigint id PK
+    bigint account_id FK
+    enum type
     string name
     string[] hobbies
     string about
-    bigint preference_id FK
 }
 
 PREFERENCES {
     bigint id PK
+    bigint profiles_id FK
     float64 max_distance
     int min_age
     int max_age

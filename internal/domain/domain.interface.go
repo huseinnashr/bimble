@@ -2,6 +2,9 @@ package domain
 
 import (
 	"context"
+	"database/sql"
+
+	redisv9 "github.com/redis/go-redis/v9"
 )
 
 type IAccountUsecase interface {
@@ -11,14 +14,23 @@ type IAccountUsecase interface {
 }
 
 type IAccountRepo interface {
-	HashPassword(ctx context.Context, password string) (string, error)
 	CreateAccount(ctx context.Context, email, hashedPassword string) (int64, error)
-	SetVerificationToken(ctx context.Context, accountID int64, encodedToken string) error
+	SetVerificationToken(ctx context.Context, accountID int64, token string) error
 	SendVerificationToken(ctx context.Context, email, encodedToken string) error
 	GetAccountIDFromToken(ctx context.Context, token string) (int64, error)
 	SetAccountToVerified(ctx context.Context, accountID int64) error
-	GetAccountRefFromEmail(ctx context.Context, email string) (AccountRef, error)
+	GetAccountRefFromEmail(ctx context.Context, email string) (*AccountRef, error)
 	SetSession(ctx context.Context, token string, accountRef AccountRef) error
+}
+
+type ISQLDatabase interface {
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+}
+
+type IRedis interface {
+	redisv9.StringCmdable
 }
 
 type AccountRef struct {

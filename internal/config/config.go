@@ -7,8 +7,27 @@ import (
 )
 
 type Config struct {
-	Version string `json:"version" yaml:"version"`
-	Port    int    `json:"port" yaml:"port"`
+	Version  string   `json:"version" yaml:"version"`
+	Port     int      `json:"port" yaml:"port"`
+	Resource Resource `json:"resource" yaml:"resource"`
+}
+
+type Resource struct {
+	SQLDatabase SQLDatabase `json:"sql_database" yaml:"sql_database"`
+	Redis       Redis       `json:"redis" yaml:"redis"`
+}
+
+type SQLDatabase struct {
+	Host     string `json:"host" yaml:"host"`
+	Port     int64  `json:"port" yaml:"port"`
+	User     string `json:"user" yaml:"user"`
+	Password string `json:"password" yaml:"password"`
+	DBName   string `json:"db_name" yaml:"db_name"`
+}
+
+type Redis struct {
+	Address  string `json:"address" yaml:"address"`
+	Password string `json:"password" yaml:"password"`
 }
 
 func GetConfig(configPath string) (*Config, error) {
