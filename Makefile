@@ -4,6 +4,7 @@ EXCLUDE_THIRD_PARTY=--exclude-path third_party/errors --exclude-path third_party
 setup:
 	go mod vendor
 	go install github.com/cespare/reflex@latest
+	go install github.com/pressly/goose/v3/cmd/goose@latest
 
 .PHONY: api
 api:

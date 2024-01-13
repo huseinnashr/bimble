@@ -32,7 +32,7 @@ type AccountServiceHTTPServer interface {
 func RegisterAccountServiceHTTPServer(s *http.Server, srv AccountServiceHTTPServer) {
 	r := s.Route("/")
 	r.POST("/accounts:signup", _AccountService_Signup0_HTTP_Handler(srv))
-	r.GET("/accounts:signup", _AccountService_Verify0_HTTP_Handler(srv))
+	r.GET("/accounts:verify", _AccountService_Verify0_HTTP_Handler(srv))
 	r.POST("/accounts:login", _AccountService_Login0_HTTP_Handler(srv))
 }
 
@@ -141,7 +141,7 @@ func (c *AccountServiceHTTPClientImpl) Signup(ctx context.Context, in *SignupReq
 
 func (c *AccountServiceHTTPClientImpl) Verify(ctx context.Context, in *VerifyRequest, opts ...http.CallOption) (*VerifyResponse, error) {
 	var out VerifyResponse
-	pattern := "/accounts:signup"
+	pattern := "/accounts:verify"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationAccountServiceVerify))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -19,5 +19,7 @@ func main() {
 		panic(err)
 	}
 
-	startApp(ctx, cfg)
+	if err := startApp(ctx, cfg); err != nil {
+		panic(err)
+	}
 }

@@ -7,15 +7,25 @@ import (
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (u *Usecase) Signup(ctx context.Context, email, password string) error {
-	hashedPassword, err := u.accountRepo.HashPassword(ctx, password)
+	accountRef, err := u.accountRepo.GetAccountRefFromEmail(ctx, email)
+	if err != nil {
+		return errors.InternalServer(err.Error(), "failed to retrieve account ref")
+	}
+
+	if accountRef != nil && accountRef.IsVerified {
+		return errors.BadRequest("account.IsVerified is true", "Account already exist please sign in")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return errors.InternalServer(err.Error(), "failed to hash password")
 	}
 
-	accountID, err := u.accountRepo.CreateAccount(ctx, email, hashedPassword)
+	accountID, err := u.accountRepo.CreateAccount(ctx, email, string(hashedPassword))
 	if err != nil {
 		return errors.InternalServer(err.Error(), "failed to create account")
 	}
@@ -66,13 +76,23 @@ func (u *Usecase) Login(ctx context.Context, email, password string) (string, er
 		return "", errors.InternalServer(err.Error(), "failed to retrieve account ref")
 	}
 
-	hashedPassword, err := u.accountRepo.HashPassword(ctx, password)
-	if err != nil {
-		return "", errors.InternalServer(err.Error(), "failed to hash password")
+	if accountRef == nil {
+		return "", errors.Unauthorized("account ref is empty", "account doesn't exist")
 	}
 
-	if hashedPassword != accountRef.HashedPassword {
-		return "", errors.Unauthorized("hashed password not matched", "email/password is invalid")
+	if !accountRef.IsVerified {
+		return "", errors.BadRequest(
+			"account.isVerified is false",
+			"Account is not verified. Please open the verification link sent to your email",
+		)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(accountRef.HashedPassword), []byte(password))
+	if err != nil {
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			return "", errors.Unauthorized("hashed password not matched", "email/password is invalid")
+		}
+		return "", errors.InternalServer(err.Error(), "failed to compare password")
 	}
 
 	uuid, err := uuid.NewRandom()
@@ -81,7 +101,7 @@ func (u *Usecase) Login(ctx context.Context, email, password string) (string, er
 	}
 
 	token := fmt.Sprintf("%d:%s", accountRef.AccountID, uuid.String())
-	if err := u.accountRepo.SetSession(ctx, token, accountRef); err != nil {
+	if err := u.accountRepo.SetSession(ctx, token, *accountRef); err != nil {
 		return "", errors.InternalServer(err.Error(), "failed to set session")
 	}
 

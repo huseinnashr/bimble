@@ -1,2 +1,11 @@
 version: "@latest"
-port: 8001
+port: 8080
+resource:
+  sql_database:
+    host: localhost
+    port: 5432
+    user: postgres
+    password: postgres
+    db_name: postgres
+  redis:
+    address: localhost:6379
