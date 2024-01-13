@@ -566,44 +566,65 @@ be->>-st: OK
 
 ## Tests
 ### Criteria
-    F1. User can create new account with an email
-    [ ] Verification link is sent to correct email
+F1. User can create new account with an email
+- Return `Signup Success` on non existance account
+![signup_success_test](./files/screenshots/signup_success_test.png)
+- Return `account already exist` on existed verified account
+![signup_exist](./files/screenshots/signup_exist.png)
+- Can re-signup/change password if email is not verified
+![signup_again_unverified](./files/screenshots/signup_again_unverified.png)
+- Can login after re-signup
+![login_signup_again](./files/screenshots/login_signup_again.png)
+- Verification link is sent to correct email
+![verification_email_correct](./files/screenshots/verification_email_correct.png)
+- Verification link is stored in redis
+![redis_verification_token](./files/screenshots/redis_verification_token.png)
 
-    F2. User can verify its newly created account's email
-    [ ] text "account has been verified message" appear when verification link is openned
+F2. User can verify its newly created account's email
+- text `account has been verified message` appear when verification link is openned
+![account_verified](./files/screenshots/account_verified.png)
+- account is verified in DB
+![sqldb_account_verified](./files/screenshots/sqldb_account_verified.png)
 
-    F3.1. Existing user can login with email and password (Implemented)
-    [ ] session token is returned
-    
-    F3.2. System can authenticate user on authenticated endpoint
-    [ ] endpoint with "Authentication" header not returning Unauthenticated status
-    [ ] endpoint will return Unauthenticated status when using invalid session token
+F3.1. Existing user can login with email and password (Implemented)
+- session token is returned
+![login_success_test](./files/screenshots/login_success_test.png)
+- text `email/password is invalid` return when wrong password
+![login_wrong_password](./files/screenshots/login_wrong_password.png)
+- text `account is not verified` return when account is not verified
+![login_unverified](./files/screenshots/login_unverified.png)
+- text `account is not exist` return when account is not exist
+![login_not_exist](./files/screenshots/login_not_exist.png)
+- session token is stored in redis
+![redis_session_token](./files/screenshots/redis_session_token.png)
 
-    F4. Authenticated user can customize their dating profile (OOS but MVP)
-    [ ] endpoint return "profile has been changed"
-    
-    F5. Authenticated user can set their dating preferences (OOS but MVP)
-    [ ] endpoint return "preferences has been changed"
-    
-    F7. Authenticated user can see list of personalized dating profiles (OOS but MVP)
-    [ ] endpoint return array of dating profile ranked approximately by distance and user profiles/preferences 
+F3.2. System can authenticate user on authenticated endpoint
+- endpoint with "Authentication" header not returning Unauthenticated status
+- endpoint will return Unauthenticated status when using invalid session token
 
-    F8. Authenticated user can pass a dating profile
-    [ ] endpoint return "profile is passed" 
+F4. Authenticated user can customize their dating profile (OOS but MVP)
+- endpoint return "profile has been changed"
 
-    F9. Authenticated user can like a dating profile
-    [ ] endpoint return "profile is liked" 
+F5. Authenticated user can set their dating preferences (OOS but MVP)
+- endpoint return "preferences has been changed"
 
-    F10. Regular User is limitted to 10 pass+like per day
-    [ ] endpoint return "cannot passed/liked, quota of 10/day is reached" 
+F7. Authenticated user can see list of personalized dating profiles (OOS but MVP)
+- endpoint return array of dating profile ranked approximately by distance and user profiles/preferences 
 
-    F11. Authenticated user won't be able to see the same dating profile in the same day
-    [ ] endpoint exclude viewed profile that day
+F8. Authenticated user can pass a dating profile
+- endpoint return "profile is passed" 
 
-    F12.1 Regular user can purchase premium packagees which unlock one premium feature of their choosing. The features are:
-    - No swipe quota
-    - Verified label
-    [ ] endpoint return payment link
+F9. Authenticated user can like a dating profile
+- endpoint return "profile is liked" 
 
-    F12.2 System can verify the purchase payment
-    [ ] endpoint return OK
+F10. Regular User is limitted to 10 pass+like per day
+- endpoint return "cannot passed/liked, quota of 10/day is reached" 
+
+F11. Authenticated user won't be able to see the same dating profile in the same day
+- endpoint exclude viewed profile that day
+
+F12.1 Regular user can purchase premium packagees which unlock one premium feature of their choosing. The features are: No swipe quota & Verified label
+- endpoint return payment link
+
+F12.2 System can verify the purchase payment
+- endpoint return OK
