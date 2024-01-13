@@ -2,6 +2,8 @@ package account
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -11,7 +13,12 @@ import (
 
 func (r *Repo) CreateAccount(ctx context.Context, email, hashedPassword string) (int64, error) {
 	row := r.sqlDatabase.QueryRowContext(ctx,
-		`INSERT INTO accounts(email, password) VALUES (?,?) RETURNING id`,
+		`
+			INSERT INTO accounts(email, password) VALUES ($1,$2) 
+			ON CONFLICT ON CONSTRAINT accounts_email_key
+			DO UPDATE SET password = EXCLUDED.password
+			RETURNING id
+		`,
 		email, hashedPassword,
 	)
 	if err := row.Err(); err != nil {
@@ -57,7 +64,7 @@ func (r *Repo) GetAccountIDFromToken(ctx context.Context, token string) (int64, 
 }
 
 func (r *Repo) SetAccountToVerified(ctx context.Context, accountID int64) error {
-	_, err := r.sqlDatabase.ExecContext(ctx, `UPDATE accounts SET is_verified = true WHERE id = ?`, accountID)
+	_, err := r.sqlDatabase.ExecContext(ctx, `UPDATE accounts SET is_verified = true WHERE id = $1`, accountID)
 	if err != nil {
 		return err
 	}
@@ -68,11 +75,13 @@ func (r *Repo) SetAccountToVerified(ctx context.Context, accountID int64) error 
 func (r *Repo) GetAccountRefFromEmail(ctx context.Context, email string) (*domain.AccountRef, error) {
 	row := r.sqlDatabase.QueryRowContext(ctx,
 		`
-			SELECT accounts.id, COALESCE(profiles.id, 0), COALESCE(preferences.id, 0) 
+			SELECT 
+				accounts.id, COALESCE(profiles.id, 0), COALESCE(preferences.id, 0), 
+				accounts.password, accounts.is_verified
 			FROM accounts 
-			JOIN profiles ON profiles.account_id = accounts.id AND profiles.type = "DATING"
-			JOIN preferences ON preferences.profile_id = profiles.id
-			WHERE accounts.email = ?
+			LEFT JOIN profiles ON profiles.account_id = accounts.id AND profiles.type = 'DATING'
+			LEFT JOIN preferences ON preferences.profile_id = profiles.id
+			WHERE accounts.email = $1
 			LIMIT 1
 		`,
 		email,
@@ -84,8 +93,12 @@ func (r *Repo) GetAccountRefFromEmail(ctx context.Context, email string) (*domai
 	accountRef := &domain.AccountRef{}
 	err := row.Scan(
 		&accountRef.AccountID, &accountRef.DatingProfileID, &accountRef.DatingPreferenceID,
+		&accountRef.HashedPassword, &accountRef.IsVerified,
 	)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -95,7 +108,9 @@ func (r *Repo) GetAccountRefFromEmail(ctx context.Context, email string) (*domai
 func (r *Repo) SetSession(ctx context.Context, token string, accountRef domain.AccountRef) error {
 	key := fmt.Sprintf("login_session:%d", accountRef.AccountID)
 
-	response := r.redis.Set(ctx, key, accountRef, 24*time.Hour)
+	val, _ := json.Marshal(accountRef)
+
+	response := r.redis.Set(ctx, key, val, 24*time.Hour)
 	if err := response.Err(); err != nil {
 		return err
 	}

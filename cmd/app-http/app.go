@@ -9,6 +9,7 @@ import (
 	accounthttphandler "github.com/huseinnashr/bimble/internal/handler/http/account"
 	accountrepo "github.com/huseinnashr/bimble/internal/repo/account"
 	accountusecase "github.com/huseinnashr/bimble/internal/usecase/account"
+	_ "github.com/lib/pq"
 	redisv9 "github.com/redis/go-redis/v9"
 )
 

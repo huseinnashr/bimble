@@ -21,6 +21,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
+	github.com/lib/pq v1.10.9
 	github.com/redis/go-redis/v9 v9.4.0
 	golang.org/x/crypto v0.18.0
 	golang.org/x/sys v0.16.0 // indirect

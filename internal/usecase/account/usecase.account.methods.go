@@ -11,6 +11,15 @@ import (
 )
 
 func (u *Usecase) Signup(ctx context.Context, email, password string) error {
+	accountRef, err := u.accountRepo.GetAccountRefFromEmail(ctx, email)
+	if err != nil {
+		return errors.InternalServer(err.Error(), "failed to retrieve account ref")
+	}
+
+	if accountRef != nil && accountRef.IsVerified {
+		return errors.BadRequest("account.IsVerified is true", "Account already exist please sign in")
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return errors.InternalServer(err.Error(), "failed to hash password")
@@ -71,7 +80,14 @@ func (u *Usecase) Login(ctx context.Context, email, password string) (string, er
 		return "", errors.Unauthorized("account ref is empty", "account doesn't exist")
 	}
 
-	bcrypt.CompareHashAndPassword([]byte(accountRef.HashedPassword), []byte(password))
+	if !accountRef.IsVerified {
+		return "", errors.BadRequest(
+			"account.isVerified is false",
+			"Account is not verified. Please open the verification link sent to your email",
+		)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(accountRef.HashedPassword), []byte(password))
 	if err != nil {
 		if err == bcrypt.ErrMismatchedHashAndPassword {
 			return "", errors.Unauthorized("hashed password not matched", "email/password is invalid")

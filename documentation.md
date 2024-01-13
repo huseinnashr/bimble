@@ -160,7 +160,7 @@ PROFILES {
 PREFERENCES {
     bigint id PK
     bigint profiles_id FK
-    float64 max_distance
+    int max_distance
     int min_age
     int max_age
 }

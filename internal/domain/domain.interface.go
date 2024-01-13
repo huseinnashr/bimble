@@ -38,4 +38,5 @@ type AccountRef struct {
 	DatingProfileID    int64  `json:"dating_profile_id"`
 	DatingPreferenceID int64  `json:"dating_preference_id"`
 	HashedPassword     string `json:"-"`
+	IsVerified         bool   `json:"-"`
 }

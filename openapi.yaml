@@ -25,22 +25,6 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/v1.LoginResponse'
     /accounts:signup:
-        get:
-            tags:
-                - AccountService
-            operationId: AccountService_Verify
-            parameters:
-                - name: token
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/v1.VerifyResponse'
         post:
             tags:
                 - AccountService
@@ -58,6 +42,23 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/v1.SignupResponse'
+    /accounts:verify:
+        get:
+            tags:
+                - AccountService
+            operationId: AccountService_Verify
+            parameters:
+                - name: token
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.VerifyResponse'
 components:
     schemas:
         v1.LoginRequest:
