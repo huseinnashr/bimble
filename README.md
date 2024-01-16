@@ -1,5 +1,5 @@
 # bimble
-you know, for dating
+you know, for dating. Try it at https://bimble-backend.ordinarytechfolks.com (self-hosted, sometimes down)
 
 ## Information
 ### A. Folder Structure
