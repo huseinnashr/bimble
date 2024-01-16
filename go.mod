@@ -1,6 +1,6 @@
 module github.com/huseinnashr/bimble
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/go-kratos/kratos/v2 v2.7.2

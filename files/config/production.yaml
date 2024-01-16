@@ -1,0 +1,11 @@
+version: #{RELEASE_VERSION}
+port: 8080
+resource:
+  sql_database:
+    host: yb-tservers
+    port: 5433
+    user: yugabyte
+    password: yugabyte
+    db_name: yugabyte
+  redis:
+    address: redis-standalone:6379
