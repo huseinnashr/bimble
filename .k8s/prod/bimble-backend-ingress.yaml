@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bimble-backend-ingress
+  namespace: bimble
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: bimble-backend.ordinarytechfolks.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bimble-backend-svc
+                port:
+                  number: 80
+  tls:
+    - hosts: 
+      - bimble-backend.ordinarytechfolks.com
+      secretName: otfs-tls

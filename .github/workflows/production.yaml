@@ -1,0 +1,32 @@
+name: "Release to Production"
+
+on:
+  push:
+    tags: 
+    - '*-production'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set REALEASE_VERSION
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - run: sed -i "s/#{RELEASE_VERSION}/$RELEASE_VERSION/g" ./files/config/production.yaml
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - run: docker build -t huseinnashr/bimble-backend:$RELEASE_VERSION .
+      - run: docker push huseinnashr/bimble-backend:$RELEASE_VERSION
+      - run: sed -i "s/#{RELEASE_VERSION}/$RELEASE_VERSION/g" ./.k8s/prod/bimble-backend-depl.yaml
+      - name: Deploy to Production Cluster
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_PROD }}
+        with:
+          args: |
+            kubectl apply -f ./.k8s/prod/bimble-backend-depl.yaml
+            kubectl apply -f ./.k8s/prod/bimble-backend-svc.yaml
+            kubectl apply -f ./.k8s/prod/bimble-backend-ingress.yaml
