@@ -9,3 +9,5 @@ resource:
     db_name: yugabyte
   redis:
     address: redis-standalone:6379
+  otel_collector:
+    otlp/grpc: otel-collector-collector:4317

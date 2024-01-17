@@ -13,8 +13,9 @@ type Config struct {
 }
 
 type Resource struct {
-	SQLDatabase SQLDatabase `json:"sql_database" yaml:"sql_database"`
-	Redis       Redis       `json:"redis" yaml:"redis"`
+	SQLDatabase   SQLDatabase   `json:"sql_database" yaml:"sql_database"`
+	Redis         Redis         `json:"redis" yaml:"redis"`
+	OtelCollector OtelCollector `json:"otel_collector" yaml:"otel_collector"`
 }
 
 type SQLDatabase struct {
@@ -28,6 +29,10 @@ type SQLDatabase struct {
 type Redis struct {
 	Address  string `json:"address" yaml:"address"`
 	Password string `json:"password" yaml:"password"`
+}
+
+type OtelCollector struct {
+	OtlpGrpc string `json:"otlp/grpc" yaml:"otlp/grpc"`
 }
 
 func GetConfig(configPath string) (*Config, error) {

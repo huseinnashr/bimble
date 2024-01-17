@@ -9,9 +9,13 @@ import (
 	"time"
 
 	"github.com/huseinnashr/bimble/internal/domain"
+	"github.com/huseinnashr/bimble/internal/pkg/tracer"
 )
 
 func (r *Repo) CreateAccount(ctx context.Context, email, hashedPassword string) (int64, error) {
+	ctx, span := tracer.Start(ctx, "repo.CreateAccount")
+	defer span.End()
+
 	row := r.sqlDatabase.QueryRowContext(ctx,
 		`
 			INSERT INTO accounts(email, password) VALUES ($1,$2) 
