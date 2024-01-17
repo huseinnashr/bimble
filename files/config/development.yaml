@@ -9,3 +9,5 @@ resource:
     db_name: postgres
   redis:
     address: localhost:6379
+  otel_collector:
+    otlp/grpc: localhost:4317

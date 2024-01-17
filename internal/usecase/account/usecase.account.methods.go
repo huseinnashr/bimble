@@ -7,10 +7,14 @@ import (
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/uuid"
+	"github.com/huseinnashr/bimble/internal/pkg/tracer"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (u *Usecase) Signup(ctx context.Context, email, password string) error {
+	ctx, span := tracer.Start(ctx, "usecase.Signup")
+	defer span.End()
+
 	accountRef, err := u.accountRepo.GetAccountRefFromEmail(ctx, email)
 	if err != nil {
 		return errors.InternalServer(err.Error(), "failed to retrieve account ref")

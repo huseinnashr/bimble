@@ -5,7 +5,10 @@ import (
 	"flag"
 
 	"github.com/huseinnashr/bimble/internal/config"
+	"github.com/huseinnashr/bimble/internal/pkg/tracer"
 )
+
+const APP_NAME = "bimble-backend-http"
 
 func main() {
 	var configPath string
@@ -14,12 +17,18 @@ func main() {
 	flag.StringVar(&configPath, "config", "./files/config/local.yaml", "path to config file")
 	flag.Parse()
 
-	cfg, err := config.GetConfig(configPath)
+	config, err := config.GetConfig(configPath)
 	if err != nil {
 		panic(err)
 	}
 
-	if err := startApp(ctx, cfg); err != nil {
+	tracerShutdown, err := tracer.Init(ctx, config, APP_NAME)
+	if err != nil {
+		panic(err)
+	}
+	defer tracerShutdown(ctx)
+
+	if err := startApp(ctx, config); err != nil {
 		panic(err)
 	}
 }

@@ -4,10 +4,14 @@ import (
 	"context"
 
 	v1 "github.com/huseinnashr/bimble/api/v1"
+	"github.com/huseinnashr/bimble/internal/pkg/tracer"
 )
 
 // Signup implements v1.AccountServiceHTTPServer.
 func (h *Handler) Signup(ctx context.Context, req *v1.SignupRequest) (*v1.SignupResponse, error) {
+	ctx, span := tracer.Start(ctx, "handler.Signup")
+	defer span.End()
+
 	if err := h.accountUsecase.Signup(ctx, req.GetEmail(), req.GetPassword()); err != nil {
 		return nil, err
 	}
