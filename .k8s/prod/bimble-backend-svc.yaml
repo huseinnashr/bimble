@@ -7,7 +7,11 @@ spec:
   selector:
     app: bimble-backend-pod
   ports:
-    - name: bimble-backend-tcp
+    - name: bimble-backend-http
       protocol: TCP
       port: 80
       targetPort: 8080
+    - name: bimble-backend-grpc
+      protocol: TCP
+      port: 81
+      targetPort: 8081

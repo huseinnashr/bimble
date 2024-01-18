@@ -1,5 +1,5 @@
 # bimble
-you know, for dating. Try it at https://bimble-backend.ordinarytechfolks.com (self-hosted, sometimes down)
+you know, for dating. Try it at https://bimble-backend-http.ordinarytechfolks.com (self-hosted, sometimes down)
 
 ## Information
 ### A. Folder Structure
@@ -20,6 +20,16 @@ Due to time constraint the following is not implemented:
 #### 1. Running dev env with docker
 11. Download docker-desktop with docker-compose cli https://www.docker.com/products/docker-desktop/
 12. Run `docker-compose up -d`
+
+*Alternatively we can use services in the k8s directly using these steps (requires kubectl access):*
+
+11. Run these commands on a new terminal
+```
+kubectl port-forward services/yb-tservers -n bimble 5433:5433 & \
+kubectl port-forward services/redis-standalone -n bimble 6379:6379 & \
+kubectl port-forward services/otel-collector-collector -n bimble 4317:4317
+```
+12. Keep it running
 
 #### 2. Migrate DB with Goose
 21. Set these env

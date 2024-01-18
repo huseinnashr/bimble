@@ -10,11 +10,11 @@ api:
 	buf generate ${EXCLUDE_THIRD_PARTY} --path api/v1
 
 build:
-	go build -v -o bin/app-http cmd/app-http/*.go
+	go build -v -o bin/app-api cmd/app-api/*.go
 
 start-dev:
 	make api
-	reflex -r "\.(go|yaml)" -s -- sh -c "make build && ./bin/app-http -config=./files/config/development.yaml"
+	reflex -r "\.(go|yaml)" -s -- sh -c "make build && ./bin/app-api -config=./files/config/development.yaml"
 
 start-prod:
-	./bin/app-http -config=./files/config/production.yaml
+	./bin/app-api -config=./files/config/production.yaml

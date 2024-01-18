@@ -6,10 +6,11 @@ import (
 )
 
 type Handler struct {
+	v1.UnimplementedAccountServiceServer
 	accountUsecase domain.IAccountUsecase
 }
 
-func New(accountUsecase domain.IAccountUsecase) v1.AccountServiceHTTPServer {
+func New(accountUsecase domain.IAccountUsecase) v1.AccountServiceServer {
 	return &Handler{
 		accountUsecase: accountUsecase,
 	}

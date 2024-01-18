@@ -2,14 +2,26 @@ package config
 
 import (
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
 	Version  string   `json:"version" yaml:"version"`
-	Port     int      `json:"port" yaml:"port"`
+	BaseURL  string   `json:"base_url" yaml:"base_url"`
+	Server   Server   `json:"serve" yaml:"server"`
 	Resource Resource `json:"resource" yaml:"resource"`
+}
+
+type Server struct {
+	HTTP API `json:"http" yaml:"http"`
+	GRPC API `json:"grpc" yaml:"grpc"`
+}
+
+type API struct {
+	Address string        `mapstructure:"address"`
+	Timeout time.Duration `mapstructure:"timeout"`
 }
 
 type Resource struct {
@@ -32,7 +44,7 @@ type Redis struct {
 }
 
 type OtelCollector struct {
-	OtlpGrpc string `json:"otlp/grpc" yaml:"otlp/grpc"`
+	OTLPGRPC string `json:"otlp/grpc" yaml:"otlp/grpc"`
 }
 
 func GetConfig(configPath string) (*Config, error) {

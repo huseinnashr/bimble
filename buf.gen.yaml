@@ -3,6 +3,9 @@ plugins:
   - plugin: go
     out: api
     opt: paths=source_relative
+  - plugin: go-grpc
+    out: api
+    opt: paths=source_relative
   - plugin: go-http
     out: api
     opt: paths=source_relative

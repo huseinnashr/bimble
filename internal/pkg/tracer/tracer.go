@@ -19,6 +19,11 @@ import (
 var tracer trace.Tracer
 
 func Init(ctx context.Context, config *config.Config, name string) (func(context.Context) error, error) {
+	if config.Resource.OtelCollector.OTLPGRPC == "" {
+		tracer = otel.Tracer(name)
+		return func(ctx context.Context) error { return nil }, nil
+	}
+
 	res, err := resource.New(ctx,
 		resource.WithAttributes(
 			semconv.ServiceName(name),
@@ -28,7 +33,7 @@ func Init(ctx context.Context, config *config.Config, name string) (func(context
 		return nil, fmt.Errorf("failed to create resource: %w", err)
 	}
 
-	conn, err := grpc.DialContext(ctx, config.Resource.OtelCollector.OtlpGrpc,
+	conn, err := grpc.DialContext(ctx, config.Resource.OtelCollector.OTLPGRPC,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
 	)
