@@ -29,4 +29,5 @@ jobs:
           args: |
             kubectl apply -f ./.k8s/prod/bimble-backend-depl.yaml
             kubectl apply -f ./.k8s/prod/bimble-backend-svc.yaml
-            kubectl apply -f ./.k8s/prod/bimble-backend-ingress.yaml
+            kubectl apply -f ./.k8s/prod/bimble-backend-ingress-http.yaml
+            kubectl apply -f ./.k8s/prod/bimble-backend-ingress-grpc.yaml
