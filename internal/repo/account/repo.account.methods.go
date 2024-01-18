@@ -47,7 +47,7 @@ func (r *Repo) SetVerificationToken(ctx context.Context, accountID int64, token 
 }
 
 func (r *Repo) SendVerificationToken(ctx context.Context, email, encodedToken string) error {
-	verificationLink := fmt.Sprintf("http://localhost:%d/accounts:verify?token=%s", r.config.Port, encodedToken)
+	verificationLink := fmt.Sprintf("%s/accounts:verify?token=%s", r.config.BaseURL, encodedToken)
 	log.Println(verificationLink, "send to", email)
 
 	return nil

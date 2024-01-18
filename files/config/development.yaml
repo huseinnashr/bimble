@@ -1,5 +1,10 @@
 version: "@latest"
-port: 8080
+base_url: http://localhost:8080
+server: 
+  http:
+    address: :8080
+  grpc:
+    address: :8081
 resource:
   sql_database:
     host: localhost
@@ -9,5 +14,11 @@ resource:
     db_name: postgres
   redis:
     address: localhost:6379
-  otel_collector:
-    otlp/grpc: localhost:4317
+  # sql_database:
+  #   host: localhost
+  #   port: 5433
+  #   user: yugabyte
+  #   password: yugabyte
+  #   db_name: yugabyte
+  # otel_collector:
+  #   otlp/grpc: localhost:4317

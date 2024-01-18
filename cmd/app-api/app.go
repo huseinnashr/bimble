@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/huseinnashr/bimble/internal/config"
-	accounthttphandler "github.com/huseinnashr/bimble/internal/handler/http/account"
+	accounthandler "github.com/huseinnashr/bimble/internal/handler/api/account"
 	accountrepo "github.com/huseinnashr/bimble/internal/repo/account"
 	accountusecase "github.com/huseinnashr/bimble/internal/usecase/account"
 	_ "github.com/lib/pq"
@@ -30,9 +30,9 @@ func startApp(ctx context.Context, config *config.Config) error {
 
 	accountRepo := accountrepo.New(config, sqlDatabase, redis)
 	accountUsecase := accountusecase.New(accountRepo)
-	accountHttpHandler := accounthttphandler.New(accountUsecase)
+	accountHandler := accounthandler.New(accountUsecase)
 
-	if err := startServer(ctx, config, accountHttpHandler); err != nil {
+	if err := startServer(ctx, config, accountHandler); err != nil {
 		return err
 	}
 
