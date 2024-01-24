@@ -1,6 +1,5 @@
-version: "@latest"
 base_url: http://localhost:8080
-server: 
+app: 
   http:
     address: :8080
   grpc:
