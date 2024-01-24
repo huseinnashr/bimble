@@ -8,7 +8,10 @@ import (
 	"github.com/huseinnashr/bimble/internal/pkg/tracer"
 )
 
-const APP_NAME = "bimble-backend-http"
+var (
+	Name    string = "bimble-backend-api"
+	Version string
+)
 
 func main() {
 	var configPath string
@@ -21,8 +24,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	config.App.Name = Name
+	config.App.Version = Version
 
-	tracerShutdown, err := tracer.Init(ctx, config, APP_NAME)
+	tracerShutdown, err := tracer.Init(ctx, config)
 	if err != nil {
 		panic(err)
 	}

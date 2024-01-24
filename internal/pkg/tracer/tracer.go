@@ -18,15 +18,16 @@ import (
 
 var tracer trace.Tracer
 
-func Init(ctx context.Context, config *config.Config, name string) (func(context.Context) error, error) {
+func Init(ctx context.Context, config *config.Config) (func(context.Context) error, error) {
 	if config.Resource.OtelCollector.OTLPGRPC == "" {
-		tracer = otel.Tracer(name)
+		tracer = otel.Tracer(config.App.Name)
 		return func(ctx context.Context) error { return nil }, nil
 	}
 
 	res, err := resource.New(ctx,
 		resource.WithAttributes(
-			semconv.ServiceName(name),
+			semconv.ServiceName(config.App.Name),
+			semconv.ServiceVersion(config.App.Version),
 		),
 	)
 	if err != nil {
@@ -55,7 +56,7 @@ func Init(ctx context.Context, config *config.Config, name string) (func(context
 	otel.SetTracerProvider(tracerProvider)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
-	tracer = otel.Tracer(name)
+	tracer = otel.Tracer(config.App.Name)
 	return tracerProvider.Shutdown, nil
 }
 

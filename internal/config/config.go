@@ -10,13 +10,15 @@ import (
 type Config struct {
 	Version  string   `json:"version" yaml:"version"`
 	BaseURL  string   `json:"base_url" yaml:"base_url"`
-	Server   Server   `json:"serve" yaml:"server"`
+	App      App      `json:"app" yaml:"app"`
 	Resource Resource `json:"resource" yaml:"resource"`
 }
 
-type Server struct {
-	HTTP API `json:"http" yaml:"http"`
-	GRPC API `json:"grpc" yaml:"grpc"`
+type App struct {
+	Name    string
+	Version string
+	HTTP    API `json:"http" yaml:"http"`
+	GRPC    API `json:"grpc" yaml:"grpc"`
 }
 
 type API struct {

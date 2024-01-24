@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	v1 "github.com/huseinnashr/bimble/api/v1"
+	"github.com/huseinnashr/bimble/cmd/app-api/middleware"
 	"github.com/huseinnashr/bimble/internal/config"
 	"golang.org/x/sync/errgroup"
 )
@@ -19,18 +20,24 @@ func startServer(ctx context.Context, config *config.Config, accountHandler v1.A
 	var servers []IServer
 
 	httpServer := http.NewServer(
-		http.Address(config.Server.HTTP.Address),
+		http.Address(config.App.HTTP.Address),
+		http.Middleware(
+			middleware.ServerMetadata(config.App.Version),
+		),
 	)
 	v1.RegisterAccountServiceHTTPServer(httpServer, accountHandler)
 	servers = append(servers, httpServer)
 
 	var opts []grpc.ServerOption
-	if address := config.Server.GRPC.Address; address != "" {
+	if address := config.App.GRPC.Address; address != "" {
 		opts = append(opts, grpc.Address(address))
 	}
-	if timeout := config.Server.GRPC.Timeout; timeout != 0 {
+	if timeout := config.App.GRPC.Timeout; timeout != 0 {
 		opts = append(opts, grpc.Timeout(timeout))
 	}
+	opts = append(opts, grpc.Middleware(
+		middleware.ServerMetadata(config.App.Version),
+	))
 	grpcServer := grpc.NewServer(opts...)
 	v1.RegisterAccountServiceServer(grpcServer, accountHandler)
 	servers = append(servers, grpcServer)

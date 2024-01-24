@@ -1,6 +1,5 @@
-version: #{RELEASE_VERSION}
 base_url: https://bimble-backend-http.ordinarytechfolks.com
-server: 
+app: 
   http:
     address: :8080
   grpc:
