@@ -21,14 +21,14 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - run: docker build -t huseinnashr/bimble-backend:$RELEASE_VERSION .
       - run: docker push huseinnashr/bimble-backend:$RELEASE_VERSION
-      - run: sed -i "s/#{RELEASE_VERSION}/$RELEASE_VERSION/g" ./.k8s/prod/bimble-backend-depl.yaml
+      - run: sed -i "s/#{RELEASE_VERSION}/$RELEASE_VERSION/g" ./.k8s/production/bimble-backend-depl.yaml
       - name: Deploy to Production Cluster
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_PROD }}
         with:
           args: |
-            kubectl apply -f ./.k8s/prod/bimble-backend-depl.yaml
-            kubectl apply -f ./.k8s/prod/bimble-backend-svc.yaml
-            kubectl apply -f ./.k8s/prod/bimble-backend-ingress-http.yaml
-            kubectl apply -f ./.k8s/prod/bimble-backend-ingress-grpc.yaml
+            kubectl apply -f ./.k8s/production/bimble-backend-depl.yaml
+            kubectl apply -f ./.k8s/production/bimble-backend-svc.yaml
+            kubectl apply -f ./.k8s/production/bimble-backend-ingress-http.yaml
+            kubectl apply -f ./.k8s/production/bimble-backend-ingress-grpc.yaml
