@@ -13,9 +13,9 @@ api:
 build:
 	go build -ldflags "-X main.Version=${VERSION}" -v -o bin/app-api cmd/app-api/*.go
 
-start-dev:
+start-local:
 	make api
-	reflex -r "\.(go|yaml)" -s -- sh -c "make build && ./bin/app-api -config=./files/config/development.yaml"
+	reflex -r "\.(go|yaml)" -s -- sh -c "make build && ./bin/app-api -config=./files/config/local.yaml"
 
 start-prod:
 	./bin/app-api -config=./files/config/production.yaml

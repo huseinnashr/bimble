@@ -2,23 +2,24 @@ package config
 
 import (
 	"os"
+	"strings"
 	"time"
 
-	"gopkg.in/yaml.v2"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Version  string   `json:"version" yaml:"version"`
-	BaseURL  string   `json:"base_url" yaml:"base_url"`
-	App      App      `json:"app" yaml:"app"`
-	Resource Resource `json:"resource" yaml:"resource"`
+	Version  string   `mapstructure:"version"`
+	BaseURL  string   `mapstructure:"base_url"`
+	App      App      `mapstructure:"app"`
+	Resource Resource `mapstructure:"resource"`
 }
 
 type App struct {
 	Name    string
 	Version string
-	HTTP    API `json:"http" yaml:"http"`
-	GRPC    API `json:"grpc" yaml:"grpc"`
+	HTTP    API `mapstructure:"http"`
+	GRPC    API `mapstructure:"grpc"`
 }
 
 type API struct {
@@ -27,30 +28,33 @@ type API struct {
 }
 
 type Resource struct {
-	SQLDatabase   SQLDatabase   `json:"sql_database" yaml:"sql_database"`
-	Redis         Redis         `json:"redis" yaml:"redis"`
-	OtelCollector OtelCollector `json:"otel_collector" yaml:"otel_collector"`
+	SQLDatabase   SQLDatabase   `mapstructure:"sql_database"`
+	Redis         Redis         `mapstructure:"redis"`
+	OtelCollector OtelCollector `mapstructure:"otel_collector"`
 }
 
 type SQLDatabase struct {
-	Host     string `json:"host" yaml:"host"`
-	Port     int64  `json:"port" yaml:"port"`
-	User     string `json:"user" yaml:"user"`
-	Password string `json:"password" yaml:"password"`
-	DBName   string `json:"db_name" yaml:"db_name"`
+	Host     string `mapstructure:"host"`
+	Port     int64  `mapstructure:"port"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	DBName   string `mapstructure:"db_name"`
 }
 
 type Redis struct {
-	Address  string `json:"address" yaml:"address"`
-	Password string `json:"password" yaml:"password"`
+	Address  string `mapstructure:"address"`
+	Password string `mapstructure:"password"`
 }
 
 type OtelCollector struct {
-	OTLPGRPC string `json:"otlp/grpc" yaml:"otlp/grpc"`
+	OTLPGRPC string `mapstructure:"otlp/grpc"`
 }
 
 func GetConfig(configPath string) (*Config, error) {
-	config := &Config{}
+	v := viper.New()
+	v.SetConfigType("yaml")
+	v.AutomaticEnv()
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	file, err := os.Open(configPath)
 	if err != nil {
@@ -58,11 +62,13 @@ func GetConfig(configPath string) (*Config, error) {
 	}
 	defer file.Close()
 
-	d := yaml.NewDecoder(file)
-
-	if err := d.Decode(&config); err != nil {
+	if err := v.ReadConfig(file); err != nil {
 		return nil, err
 	}
 
+	config := &Config{}
+	if err := v.Unmarshal(config); err != nil {
+		return nil, err
+	}
 	return config, nil
 }
