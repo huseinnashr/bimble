@@ -42,7 +42,7 @@ GOOSE_DBSTRING="postgres://postgres:postgres@localhost:5432/postgres"
 #### 3. Running go service
 31. Install make cli https://formulae.brew.sh/formula/make
 32. Run `make setup`
-33. Run `make start-dev`
+33. Run `make start-local`
 
 #### 4. Modifying HTTP Server Endpoint
 41. Stop the go service
