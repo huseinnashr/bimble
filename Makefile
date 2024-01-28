@@ -18,4 +18,4 @@ start-local:
 	reflex -r "\.(go|yaml)" -s -- sh -c "make build && ./bin/app-api -config=./files/config/local.yaml"
 
 start-prod:
-	./bin/app-api -config=./files/config/production.yaml
+	./bin/app-api -config=./files/config/prod.yaml
