@@ -16,8 +16,11 @@ jobs:
           echo ${{ github.head_ref }}
       - name: Extract, validate and assign feature id
         run: |
-          FEATURE_ID=$(echo ${{ github.head_ref }} | ggrep -oP '(feature\/)\K(BIM)-\d+(?=-)' | tr 'A-Z' 'a-z')
-          if [[ -z $FEATURE_ID ]]; echo "::error branch must be name feature/BIM-123-lorem-ipsum" && exit 1; fi
+          FEATURE_ID=$(echo ${{ github.head_ref }} | grep -oP '(feature\/)\K(BIM)-\d+(?=-)' | tr 'A-Z' 'a-z')
+          if [[ -z $FEATURE_ID ]]; then
+            echo "::error branch must be name feature/BIM-123-lorem-ipsum" 
+            exit 1
+          fi
           echo "FEATURE_ID=$FEATURE_ID" >> $GITHUB_ENV
       - name: printout feature_id
         run: |
