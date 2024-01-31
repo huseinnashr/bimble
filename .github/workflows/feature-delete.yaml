@@ -1,4 +1,7 @@
 name: "Delete Feature from Cluster"
+concurrency:
+  group: bim-feature-${{ github.ref	}}
+  cancel-in-progress: true
 
 on:
   pull_request:
