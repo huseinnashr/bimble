@@ -15,7 +15,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set REALEASE_VERSION
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - run: sed -i "s/#{VERSION}/$RELEASE_VERSION/g" ./Makefile
+      - name: Replace env placeholders
+        run: |
+          sed -i "s/#{VERSION}/$RELEASE_VERSION/g" ./Makefile
+          sed -i "s/#{RELEASE_VERSION}/$RELEASE_VERSION/g" ./.k8s/prod/bimble-backend-depl.yaml
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -23,7 +26,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - run: docker build -t huseinnashr/bimble-backend:$RELEASE_VERSION .
       - run: docker push huseinnashr/bimble-backend:$RELEASE_VERSION
-      - run: sed -i "s/#{RELEASE_VERSION}/$RELEASE_VERSION/g" ./.k8s/prod/bimble-backend-depl.yaml
       - name: Deploy to Production Cluster
         uses: wahyd4/kubectl-helm-action@master
         env:

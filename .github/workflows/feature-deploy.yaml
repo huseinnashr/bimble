@@ -20,14 +20,14 @@ jobs:
             exit 1
           fi
           echo "FEATURE_ID=$FEATURE_ID" >> $GITHUB_ENV
-      - name: Set feature ID
+      - name: Replace env placeholders
         run: |
+          sed -i "s/#{VERSION}/${FEATURE_ID}-${github.event.pull_request.head.sha::7}/g" ./Makefile
+          sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./files/config/feature.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-depl.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-svc.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-ingress-grpc.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-ingress-http.yaml
-          sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./files/config/feature.yaml
-          sed -i "s/#{VERSION}/${FEATURE_ID}-${GITHUB_SHA::7}/g" ./Makefile
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
