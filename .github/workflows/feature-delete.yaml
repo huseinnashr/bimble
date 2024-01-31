@@ -32,7 +32,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_PROD }}
         with:
           args: |
-            kubectl delete -f ./.k8s/feature/bimble-backend-depl.yaml
-            kubectl delete -f ./.k8s/feature/bimble-backend-svc.yaml
-            kubectl delete -f ./.k8s/feature/bimble-backend-ingress-http.yaml
-            kubectl delete -f ./.k8s/feature/bimble-backend-ingress-grpc.yaml
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-depl.yaml
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-svc.yaml
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-ingress-http.yaml
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-ingress-grpc.yaml
