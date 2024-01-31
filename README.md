@@ -4,7 +4,7 @@ you know, for dating. Try it at https://bimble-backend-http.ordinarytechfolks.co
 ## Information
 ### A. Folder Structure
 - Structure according to Golang Clean Architecture https://github.com/bxcodec/go-clean-arch
-- Find code in `./internal` folder, there will be 3 layer. They are repo, usecase and handler (from bottom to top). Top layer can reuse bottom, bottom can call top layer
+- Find code in `./internal` folder, there will be 3 layer. These are repo, usecase and handler (from bottom to top). Top layer can reuse bottom, bottom can't call top layer
 - All interface and struct definition in `./internal/domain` folder
 - API Definition is on `./api` folder
 - Config is on `./config` folder
