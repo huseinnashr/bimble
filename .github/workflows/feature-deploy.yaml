@@ -1,4 +1,4 @@
-name: "Deploy to Feature"
+name: "Deploy Feature to Cluster"
 
 on:
   pull_request:
