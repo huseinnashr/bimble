@@ -1,4 +1,4 @@
-base_url: https://bimble-backend-http.ordinarytechfolks.com
+base_url: https://bimble-backend-http-dev.ordinarytechfolks.com
 app: 
   http:
     address: :8080
