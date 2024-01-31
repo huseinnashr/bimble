@@ -21,7 +21,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - run: docker build -t huseinnashr/bimble-backend:${GITHUB_SHA}-dev .
       - run: docker push huseinnashr/bimble-backend:${GITHUB_SHA}-dev
-      - run: sed -i "s/#{GITHUB_SHA}/$GITHUB_SHA/g" ./.k8s/dev/bimble-backend-depl.yaml
+      - run: |
+          sed -i "s/#{GITHUB_SHA}/$GITHUB_SHA/g" ./.k8s/dev/bimble-backend-depl.yaml
+          sed -i "s/#{VERSION}/$GITHUB_SHA/g" ./Makefile
       - name: Deploy to Dev Cluster
         uses: wahyd4/kubectl-helm-action@master
         env:

@@ -27,6 +27,7 @@ jobs:
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-ingress-grpc.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-ingress-http.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./files/config/feature.yaml
+          sed -i "s/#{VERSION}/${FEATURE_ID}-${GITHUB_SHA::7}/g" ./Makefile
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:

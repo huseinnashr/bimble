@@ -1,4 +1,4 @@
-VERSION=#{RELEASE_VERSION}
+VERSION=#{VERSION}
 EXCLUDE_THIRD_PARTY=--exclude-path third_party/errors --exclude-path third_party/google --exclude-path third_party/openapi --exclude-path third_party/validate
 
 setup:
