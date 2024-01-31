@@ -21,8 +21,10 @@ jobs:
           fi
           echo "FEATURE_ID=$FEATURE_ID" >> $GITHUB_ENV
       - name: Replace env placeholders
+        env: 
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          sed -i "s/#{VERSION}/${FEATURE_ID}-${github.event.pull_request.head.sha::7}/g" ./Makefile
+          sed -i "s/#{VERSION}/${FEATURE_ID}-${GITHUB_HEAD_SHA::7}/g" ./Makefile
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./files/config/feature.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-depl.yaml
           sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-svc.yaml
