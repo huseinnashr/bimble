@@ -1,4 +1,7 @@
 name: "Release to Production"
+concurrency:
+  group: prod
+  cancel-in-progress: true
 
 on:
   push:

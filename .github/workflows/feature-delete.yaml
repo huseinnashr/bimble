@@ -1,6 +1,6 @@
-name: "Delete Feature from Cluster"
+name: "Delete from Feature"
 concurrency:
-  group: bim-feature-${{ github.head_ref	}}
+  group: feature-${{ github.head_ref }}
   cancel-in-progress: true
 
 on:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: bimble-backend
-          image: huseinnashr/bimble-backend:#{COMMIT_SHA}-dev
+          image: huseinnashr/bimble-backend:#{GITHUB_SHA}-dev
           imagePullPolicy: Always
           command: ['./bin/app-api', '-config=./files/config/dev.yaml']
           envFrom:

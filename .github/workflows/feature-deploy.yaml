@@ -1,6 +1,6 @@
-name: "Deploy Feature to Cluster"
+name: "Release to Feature"
 concurrency:
-  group: bim-feature-${{ github.head_ref	}}
+  group: feature-${{ github.head_ref }}
   cancel-in-progress: true
   
 on:
