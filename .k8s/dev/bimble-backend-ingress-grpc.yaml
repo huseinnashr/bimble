@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bimble-backend-grpc
+  namespace: bimble-dev
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: bimble-backend-grpc-dev.ordinarytechfolks.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bimble-backend
+                port:
+                  number: 81
+  tls:
+    - hosts: 
+      - bimble-backend-grpc-dev.ordinarytechfolks.com
+      secretName: otfs-tls

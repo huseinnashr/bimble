@@ -1,0 +1,17 @@
+metadata:
+  release: yugabyte
+  chart: yugabytedb/yugabyte
+  namespace: bimble-dev
+resource:
+  master:
+    requests:
+      cpu: "0.5"
+      memory: 0.5Gi
+  tserver:
+    requests:
+      cpu: "0.5"
+      memory: 0.5Gi
+replicas:
+  master: 1
+  tserver: 1
+enableLoadBalancer: False

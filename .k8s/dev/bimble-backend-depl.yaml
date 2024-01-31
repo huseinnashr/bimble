@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bimble-backend-depl
-  namespace: bimble
+  name: bimble-backend
+  namespace: bimble-dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bimble-backend-pod
+      app: bimble-backend
   template:
     metadata:
       labels:
-        app: bimble-backend-pod
+        app: bimble-backend
     spec:
       containers:
         - name: bimble-backend
-          image: huseinnashr/bimble-backend:#{RELEASE_VERSION}
+          image: huseinnashr/bimble-backend:#{GITHUB_SHA}-dev
           imagePullPolicy: Always
+          command: ['./bin/app-api', '-config=./files/config/dev.yaml']
           envFrom:
             - secretRef:
                 name: bimble-backend

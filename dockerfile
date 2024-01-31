@@ -6,5 +6,3 @@ WORKDIR /app
 COPY . .
 
 RUN apk add make && make setup && make build
-
-CMD ["make", "start-prod"]

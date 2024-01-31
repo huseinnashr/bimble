@@ -49,3 +49,9 @@ GOOSE_DBSTRING="postgres://postgres:postgres@localhost:5432/postgres"
 42. Modify protos in `./api/v1` folder
 43. Run `make api`, this will generate stub that you can use. It also generate openapi.yaml spec in `./`
 44. Start the go service
+
+#### 5. Modifying secret
+51. Install `modify-secret` https://github.com/rajatjindal/kubectl-modify-secret
+52. Run `kubectl modify-secret bimble-backend -n bimble`
+53. Edit and save to apply changes
+54. Run `kubectl rollout restart deployment bimble-backend-depl -n bimble` to reload the deployment

@@ -1,0 +1,38 @@
+name: "Delete from Feature"
+concurrency:
+  group: feature-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract feature ID, check validity
+        run: |
+          FEATURE_ID=$(echo ${{ github.head_ref }} | grep -oP '(feature\/)\K(BIM)-\d+(?=-)' | tr 'A-Z' 'a-z')
+          if [[ -z $FEATURE_ID ]]; then
+            echo "::error branch must be name feature/BIM-123-lorem-ipsum" 
+            exit 1
+          fi
+          echo "FEATURE_ID=$FEATURE_ID" >> $GITHUB_ENV
+      - name: Set feature ID
+        run: |
+          sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-depl.yaml
+          sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-svc.yaml
+          sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-ingress-grpc.yaml
+          sed -i "s/#{FEATURE_ID}/$FEATURE_ID/g" ./.k8s/feature/bimble-backend-ingress-http.yaml
+      - name: Delete from cluster
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_PROD }}
+        with:
+          args: |
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-depl.yaml
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-svc.yaml
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-ingress-http.yaml
+            kubectl delete --ignore-not-found=true -f ./.k8s/feature/bimble-backend-ingress-grpc.yaml

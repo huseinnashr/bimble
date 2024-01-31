@@ -1,0 +1,17 @@
+base_url: https://bimble-backend-http-dev.ordinarytechfolks.com
+app: 
+  http:
+    address: :8080
+  grpc:
+    address: :8081
+resource:
+  sql_database:
+    host: yb-tservers
+    port: 5433
+    user: yugabyte
+    password:
+    db_name: yugabyte
+  redis:
+    address: redis-standalone:6379
+  otel_collector:
+    otlp/grpc: otel-collector-collector:4317

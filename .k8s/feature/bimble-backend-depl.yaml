@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bimble-backend-#{FEATURE_ID}
+  namespace: bimble-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bimble-backend-#{FEATURE_ID}
+  template:
+    metadata:
+      labels:
+        app: bimble-backend-#{FEATURE_ID}
+    spec:
+      containers:
+        - name: bimble-backend
+          image: huseinnashr/bimble-backend:#{FEATURE_ID}-feature
+          imagePullPolicy: Always
+          command: ['./bin/app-api', '-config=./files/config/feature.yaml']
+          envFrom:
+            - secretRef:
+                name: bimble-backend
