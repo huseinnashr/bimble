@@ -1,4 +1,6 @@
 # bimble
+***This repo is archived. Please visit [https://github.com/OrdinaryTechFolks/bimble](https://github.com/OrdinaryTechFolks/bimble-backend) to see the latest commit***
+
 you know, for dating. Try it at https://bimble-backend-http.ordinarytechfolks.com (self-hosted, sometimes down)
 
 ## Information
